@@ -9,12 +9,12 @@
     /* ── Reset ───────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { background: #000b1a; }
+    html { background: #09090c; }
 
     body {
       font-family: 'Georgia', 'Times New Roman', serif;
-      background: #000b1a;
-      color: #d4e8f7;
+      background: #09090c;
+      color: #dddad3;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
@@ -24,34 +24,35 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      padding: 1.5rem 2.5rem;
+      padding: 1.5rem 2.8rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: linear-gradient(to bottom, rgba(0,8,22,.65) 0%, transparent 100%);
+      background: linear-gradient(to bottom, rgba(4,4,8,.55) 0%, transparent 100%);
       pointer-events: none;
     }
     .site-header > * { pointer-events: auto; }
 
     .site-logo {
-      font-size: .9rem;
-      letter-spacing: .24em;
+      font-size: .78rem;
+      letter-spacing: .3em;
       text-transform: uppercase;
-      color: #c2daf0;
+      color: rgba(210,207,200,.62);
       font-weight: 400;
     }
 
-    .site-nav { display: flex; gap: 2rem; }
+    .site-nav { display: flex; gap: 2.2rem; }
 
     .site-nav a {
-      color: rgba(194,218,240,.55);
+      color: rgba(185,182,174,.35);
       text-decoration: none;
-      font-size: .7rem;
-      letter-spacing: .15em;
+      font-size: .65rem;
+      letter-spacing: .18em;
       text-transform: uppercase;
-      transition: color .25s;
+      transition: color .28s;
     }
-    .site-nav a:hover, .site-nav a:focus { color: #c2daf0; outline: none; }
+    .site-nav a:hover,
+    .site-nav a:focus { color: rgba(210,207,200,.7); outline: none; }
 
     /* ── Scene ───────────────────────────────────────────── */
     .scene {
@@ -77,7 +78,15 @@
       display: block;
     }
 
-    /* ── Surface: left-column gradient ──────────────────── */
+    /* Scene 1: reduce saturation to tone down the marine blue,
+       scale(1.03) hides blur fringe at edges */
+    .scene-surface .scene-canvas {
+      filter: blur(2.8px) brightness(0.74) saturate(0.82);
+      transform: scale(1.03);
+      transform-origin: center center;
+    }
+
+    /* ── Surface gradient — neutral dark, not navy ───────── */
     .surface-gradient {
       position: absolute;
       inset: 0;
@@ -85,12 +94,12 @@
       pointer-events: none;
       background:
         linear-gradient(to right,
-          rgba(0,8,22,.62) 0%,
-          rgba(0,8,22,.28) 38%,
-          transparent 60%),
+          rgba(6,6,10,.74) 0%,
+          rgba(6,6,10,.34) 40%,
+          transparent 62%),
         linear-gradient(to bottom,
-          rgba(0,8,22,.38) 0%,
-          transparent 22%);
+          rgba(6,6,10,.45) 0%,
+          transparent 26%);
     }
 
     /* ── Scene Overlay (text) ────────────────────────────── */
@@ -104,81 +113,115 @@
 
     .scene-overlay--surface {
       padding: 0 6vw;
-      padding-right: 52%;   /* keep right half open for divers */
+      padding-right: 52%;
     }
 
-    .overlay-content { max-width: 480px; width: 100%; }
+    /* ── Overlay content ─────────────────────────────────── */
+    .overlay-content { max-width: 520px; width: 100%; }
 
-    .overlay-eyebrow {
-      display: block;
-      font-size: .66rem;
-      letter-spacing: .3em;
+    /* Chapter marker — editorial, not nautical */
+    .overlay-chapter {
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      margin-bottom: 3.2rem;
+    }
+    .overlay-chapter-num {
+      font-size: .5rem;
+      letter-spacing: .4em;
+      color: rgba(185,182,174,.2);
+      font-style: italic;
+    }
+    .overlay-chapter-dash {
+      width: 26px;
+      height: 1px;
+      background: rgba(185,182,174,.16);
+      flex-shrink: 0;
+    }
+    .overlay-chapter-label {
+      font-size: .5rem;
+      letter-spacing: .28em;
       text-transform: uppercase;
-      color: rgba(180,212,238,.5);
-      margin-bottom: 1.25rem;
+      color: rgba(185,182,174,.2);
     }
 
+    /* Heading: spaced caps + massive bold — weight contrast */
     .overlay-heading {
-      font-size: clamp(2.4rem, 5vw, 4.2rem);
-      line-height: 1.06;
+      display: block;
+      margin-bottom: 2.2rem;
+    }
+    .heading-a {
+      display: block;
+      font-size: clamp(1rem, 2vw, 1.7rem);
       font-weight: 400;
-      color: #c2daf0;
-      margin-bottom: 1.3rem;
-      text-shadow:
-        0 1px 4px rgba(0,0,0,.35),
-        0 4px 32px rgba(0,18,52,.6);
+      font-style: normal;
+      text-transform: uppercase;
+      letter-spacing: .55em;
+      line-height: 1.6;
+      color: rgba(196,193,185,.28);
+    }
+    .heading-b {
+      display: block;
+      font-size: clamp(4.8rem, 9.5vw, 8.5rem);
+      font-weight: 700;
+      line-height: .86;
+      letter-spacing: -.03em;
+      color: #dddad3;
+      text-shadow: 0 2px 48px rgba(0,0,0,.55);
     }
 
     .overlay-body {
-      font-size: .95rem;
-      line-height: 1.72;
-      color: rgba(194,218,240,.65);
-      margin-bottom: 2.2rem;
-      max-width: 370px;
-      text-shadow: 0 1px 12px rgba(0,14,38,.55);
+      font-size: .85rem;
+      line-height: 1.9;
+      color: rgba(185,182,174,.4);
+      margin-bottom: 0;
+      max-width: 290px;
     }
 
-    .overlay-actions { display: flex; gap: .85rem; flex-wrap: wrap; }
+    /* Separator */
+    .overlay-sep {
+      width: 26px;
+      height: 1px;
+      background: rgba(185,182,174,.13);
+      margin: 2.4rem 0;
+    }
 
-    /* ── Buttons ─────────────────────────────────────────── */
-    .btn {
+    .overlay-actions { display: flex; align-items: center; }
+
+    /* Minimal line-prefix button — the line extends on hover */
+    .btn--discover {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      padding: .76em 1.8em;
-      font-size: .71rem;
-      letter-spacing: .14em;
-      text-transform: uppercase;
+      gap: .95rem;
       text-decoration: none;
+      color: rgba(196,193,185,.44);
+      font-size: .6rem;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      border: none;
+      background: none;
+      padding: 0;
+      min-height: 44px;
       cursor: pointer;
       font-family: 'Georgia', serif;
-      min-height: 44px;
-      transition: background .28s, border-color .28s, color .28s;
-      border: 1px solid transparent;
+      transition: color .38s;
     }
-
-    .btn--primary {
-      background: rgba(194,218,240,.11);
-      color: #c2daf0;
-      border-color: rgba(194,218,240,.32);
-      backdrop-filter: blur(6px);
+    .btn--discover::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: currentColor;
+      flex-shrink: 0;
+      transition: width .44s ease;
     }
-    .btn--primary:hover, .btn--primary:focus {
-      background: rgba(194,218,240,.2);
-      border-color: rgba(194,218,240,.58);
+    .btn--discover:hover,
+    .btn--discover:focus {
+      color: rgba(210,207,200,.78);
       outline: none;
     }
-
-    .btn--ghost {
-      background: transparent;
-      color: rgba(194,218,240,.48);
-      border-color: rgba(194,218,240,.16);
-    }
-    .btn--ghost:hover, .btn--ghost:focus {
-      color: #c2daf0;
-      border-color: rgba(194,218,240,.38);
-      outline: none;
-    }
+    .btn--discover:hover::before,
+    .btn--discover:focus::before { width: 36px; }
 
     /* ── Scroll indicator ────────────────────────────────── */
     .scroll-indicator {
@@ -191,9 +234,9 @@
       flex-direction: column;
       align-items: center;
       gap: .55rem;
-      color: rgba(194,218,240,.38);
-      font-size: .58rem;
-      letter-spacing: .24em;
+      color: rgba(185,182,174,.28);
+      font-size: .52rem;
+      letter-spacing: .28em;
       text-transform: uppercase;
       pointer-events: none;
       user-select: none;
@@ -202,22 +245,22 @@
     .scroll-indicator-line {
       width: 1px;
       height: 34px;
-      background: linear-gradient(to bottom, rgba(194,218,240,.55), transparent);
-      animation: scrollPulse 2.2s ease-in-out infinite;
+      background: linear-gradient(to bottom, rgba(185,182,174,.48), transparent);
+      animation: scrollPulse 2.4s ease-in-out infinite;
     }
 
     @keyframes scrollPulse {
-      0%, 100% { transform: scaleY(.55); opacity: .28; }
-      50%       { transform: scaleY(1);  opacity: .85; }
+      0%, 100% { transform: scaleY(.5); opacity: .22; }
+      50%       { transform: scaleY(1); opacity: .75; }
     }
 
     /* ── Transition scene ────────────────────────────────── */
-    .scene-transition { background: #00172e; }
+    .scene-transition { background: #07080c; }
 
     .transition-bg {
       position: absolute;
       inset: 0;
-      background: linear-gradient(150deg, #002244 0%, #001428 55%, #000c1e 100%);
+      background: linear-gradient(160deg, #0d1520 0%, #080c14 55%, #050709 100%);
     }
 
     .transition-atmosphere {
@@ -226,27 +269,27 @@
       z-index: 2;
       background: radial-gradient(
         ellipse 80% 60% at 50% 40%,
-        rgba(0,65,135,.28) 0%,
+        rgba(35,85,95,.18) 0%,
         transparent 70%
       );
       pointer-events: none;
     }
 
     /* ── Underwater scene ────────────────────────────────── */
-    .scene-underwater { background: #000a1a; }
+    .scene-underwater { background: #050709; }
 
     /* REPLACE: loop video background slot */
-    /* REPLACE: section-2 frame sequence canvas slot  */
+    /* REPLACE: section-2 frame sequence canvas slot */
     .underwater-bg {
       position: absolute;
       inset: 0;
       z-index: 1;
       background:
-        radial-gradient(ellipse 100% 55% at 50% 0%,   rgba(0,58,125,.52) 0%, transparent 65%),
-        radial-gradient(ellipse 55% 75% at 14% 68%,   rgba(0,33,88,.55)  0%, transparent 58%),
-        radial-gradient(ellipse 55% 75% at 86% 54%,   rgba(0,26,72,.45)  0%, transparent 58%),
-        radial-gradient(ellipse 80% 45% at 50% 100%,  rgba(0,9,26,.8)    0%, transparent 52%),
-        linear-gradient(to bottom, #002e5c 0%, #001630 36%, #000c20 70%, #00080f 100%);
+        radial-gradient(ellipse 100% 55% at 50% 0%,   rgba(8,55,70,.58) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 75% at 14% 68%,   rgba(4,38,52,.55) 0%, transparent 58%),
+        radial-gradient(ellipse 55% 75% at 86% 54%,   rgba(4,32,46,.45) 0%, transparent 58%),
+        radial-gradient(ellipse 80% 45% at 50% 100%,  rgba(2,5,10,.88)  0%, transparent 52%),
+        linear-gradient(to bottom, #061c28 0%, #040e18 36%, #030810 70%, #020508 100%);
     }
 
     /* REPLACE: light ray texture overlay slot */
@@ -259,16 +302,16 @@
         -17deg,
         transparent,
         transparent 108px,
-        rgba(72,152,215,1) 108px,
-        rgba(72,152,215,1) 126px
+        rgba(95,178,158,1) 108px,
+        rgba(95,178,158,1) 126px
       );
-      opacity: .07;
+      opacity: .052;
       animation: rayShimmer 10s ease-in-out infinite;
     }
 
     @keyframes rayShimmer {
-      0%, 100% { opacity: .05; transform: translateX(-4%) skewX(-1.5deg); }
-      50%       { opacity: .10; transform: translateX( 4%) skewX( 1.5deg); }
+      0%, 100% { opacity: .038; transform: translateX(-4%) skewX(-1.5deg); }
+      50%       { opacity: .08;  transform: translateX( 4%) skewX( 1.5deg); }
     }
 
     .underwater-vignette {
@@ -279,11 +322,11 @@
       background: radial-gradient(
         ellipse 88% 78% at 50% 50%,
         transparent 18%,
-        rgba(0,5,16,.72) 100%
+        rgba(2,4,8,.78) 100%
       );
     }
 
-    /* Bubble texture slot ↓ */
+    /* Bubble texture slot */
     .underwater-haze {
       position: absolute;
       inset: 0;
@@ -292,8 +335,8 @@
       background: linear-gradient(
         to bottom,
         transparent 0%,
-        rgba(0,18,52,.14) 40%,
-        rgba(0,10,30,.32) 100%
+        rgba(4,14,22,.12) 40%,
+        rgba(2,6,14,.26) 100%
       );
     }
 
@@ -306,14 +349,14 @@
       padding: 0 7vw;
     }
 
-    .underwater-text { max-width: 400px; }
+    .underwater-text { max-width: 380px; }
 
-    .underwater-text .overlay-eyebrow  { color: rgba(70,150,215,.42); }
-    .underwater-text .overlay-heading  {
-      font-size: clamp(1.9rem, 3.4vw, 3.2rem);
-      color: rgba(172,210,242,.82);
+    .underwater-text .overlay-chapter-label { color: rgba(95,168,148,.32); }
+    .underwater-text .overlay-heading {
+      font-size: clamp(1.8rem, 3.2vw, 2.9rem);
+      color: rgba(205,202,195,.72);
     }
-    .underwater-text .overlay-body { color: rgba(130,185,228,.52); }
+    .underwater-text .overlay-body { color: rgba(148,145,138,.38); }
 
     /* ── Bubble layers ───────────────────────────────────── */
     .scene-bubbles {
@@ -333,26 +376,26 @@
       will-change: transform;
       background: radial-gradient(
         circle at 32% 28%,
-        rgba(255,255,255,.58),
-        rgba(195,228,255,.06) 68%,
+        rgba(255,255,255,.42),
+        rgba(210,235,225,.04) 68%,
         transparent 100%
       );
-      border: 1px solid rgba(195,228,255,.1);
+      border: 1px solid rgba(210,235,225,.07);
     }
 
-    .scene-bubbles--far  .bubble { filter: blur(.8px); opacity: .18; }
-    .scene-bubbles--mid  .bubble { opacity: .30; }
-    .scene-bubbles--near .bubble { opacity: .48; }
+    .scene-bubbles--far  .bubble { filter: blur(.8px); opacity: .13; }
+    .scene-bubbles--mid  .bubble { opacity: .22; }
+    .scene-bubbles--near .bubble { opacity: .38; }
 
     /* ── Footer ──────────────────────────────────────────── */
     .site-footer {
       padding: 5rem 2.5rem;
       text-align: center;
-      color: rgba(194,218,240,.2);
-      font-size: .7rem;
-      letter-spacing: .12em;
-      background: #00070f;
-      border-top: 1px solid rgba(194,218,240,.04);
+      color: rgba(185,182,174,.15);
+      font-size: .66rem;
+      letter-spacing: .16em;
+      background: #050507;
+      border-top: 1px solid rgba(185,182,174,.04);
     }
 
     /* ── Responsive ──────────────────────────────────────── */
@@ -363,10 +406,9 @@
         align-items: flex-end;
         padding-bottom: 9vh;
       }
-      .overlay-content  { max-width: 100%; }
-      .overlay-body     { max-width: 100%; }
-      .site-nav         { display: none; }
-      .btn--primary     { backdrop-filter: none; }
+      .overlay-content { max-width: 100%; }
+      .overlay-body    { max-width: 100%; }
+      .site-nav        { display: none; }
     }
 
     /* ── Reduced motion ──────────────────────────────────── */
@@ -412,16 +454,30 @@
 
       <div class="scene-overlay scene-overlay--surface">
         <div class="overlay-content">
-          <span class="overlay-eyebrow">Mediterranean Coast</span>
-          <h1 class="overlay-heading">Into&nbsp;the&nbsp;Blue</h1>
-          <p class="overlay-body">
-            Where the sea meets the sky, every breath becomes a preparation
-            for the world beneath. Join us on the dive of a lifetime.
-          </p>
-          <div class="overlay-actions">
-            <a href="#scene-underwater" class="btn btn--primary">Explore Expeditions</a>
-            <a href="#about"            class="btn btn--ghost">Our Story</a>
+
+          <div class="overlay-chapter">
+            <span class="overlay-chapter-num">I</span>
+            <span class="overlay-chapter-dash"></span>
+            <span class="overlay-chapter-label">Prologue</span>
           </div>
+
+          <h1 class="overlay-heading">
+            <span class="heading-a">Into</span>
+            <span class="heading-b">the Blue</span>
+          </h1>
+
+          <p class="overlay-body">
+            A different kind of stillness.<br>
+            Mediterranean expeditions<br>
+            for those drawn to depth.
+          </p>
+
+          <div class="overlay-sep"></div>
+
+          <div class="overlay-actions">
+            <a href="#scene-underwater" class="btn--discover">Discover</a>
+          </div>
+
         </div>
       </div>
 
@@ -468,11 +524,16 @@
 
       <div class="underwater-overlay">
         <div class="underwater-text">
-          <span class="overlay-eyebrow">5 Metres Below</span>
-          <h2 class="overlay-heading">A&nbsp;World of Silence</h2>
+          <div class="overlay-chapter">
+            <span class="overlay-chapter-num">II</span>
+            <span class="overlay-chapter-dash"></span>
+            <span class="overlay-chapter-label">Descent</span>
+          </div>
+          <h2 class="overlay-heading">A&nbsp;World<br>of Silence</h2>
           <p class="overlay-body">
-            Time moves differently down here. The light dances, the pressure
-            hums, and everything above slowly fades into memory.
+            Time moves differently here.<br>
+            The light scatters. Pressure holds.<br>
+            Everything above fades.
           </p>
         </div>
       </div>
@@ -503,16 +564,16 @@
       frameCount:   192,
       framePath:    (n) => `assets/frames/section-1/frame_${String(n).padStart(4,'0')}.png`,
       pinDuration:  () => isMobile() ? 1800 : 3200,
-      scrub:        1.5,
-      priorityLoad: 14,   // frames loaded before the rest
+      scrub:        2.2,   // slow/dreamy — surface lingers
+      priorityLoad: 14,
     },
     transition: {
-      pinDuration: () => isMobile() ? 700 : 1200,
-      scrub: 1,
+      pinDuration: () => isMobile() ? 380 : 580,  // short = flies by fast
+      scrub:       0.22,                           // snappy instant response
     },
     underwater: {
       pinDuration: () => isMobile() ? 1500 : 2600,
-      scrub: 1,
+      scrub:       1.6,   // settled, calmer than surface
     },
   };
 
@@ -587,13 +648,16 @@
 
   /* ─────────────────────────────────────────────────────────────
      initSequenceScene
-     Wires a canvas element to a scroll-scrubbed image sequence.
+     Auto-plays the frame sequence in a continuous 24 fps loop.
+     Scroll pins the section and drives scene transitions only —
+     frame index is never touched by scroll.
   ───────────────────────────────────────────────────────────── */
   function initSequenceScene(canvasEl, stConfig) {
     const ctx   = canvasEl.getContext('2d');
-    let curIdx  = 0;
-    let pending = false;
-    let rafId   = null;
+    let curIdx        = 0;
+    let rafId         = null;
+    let lastFrameTime = 0;
+    const AUTO_MS     = 1000 / 24;   // 24 fps
 
     function resize() {
       canvasEl.width  = window.innerWidth;
@@ -603,15 +667,15 @@
 
     function render() {
       drawSequenceFrame(ctx, frames[curIdx], canvasEl.width, canvasEl.height);
-      pending = false;
     }
 
-    function scheduleRender() {
-      if (!pending) {
-        pending = true;
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(render);
+    function tick(timestamp) {
+      if (timestamp - lastFrameTime >= AUTO_MS) {
+        lastFrameTime = timestamp;
+        const next = (curIdx + 1) % CFG.surface.frameCount;
+        if (frames[next]) { curIdx = next; render(); }
       }
+      rafId = requestAnimationFrame(tick);
     }
 
     const frames = preloadSequenceFrames(
@@ -621,42 +685,25 @@
       {
         onFirstFrame(img) {
           drawSequenceFrame(ctx, img, canvasEl.width, canvasEl.height);
+          if (!REDUCED_MOTION) rafId = requestAnimationFrame(tick);
         },
       }
     );
 
-    let st = null;
-
-    if (REDUCED_MOTION) {
-      st = ScrollTrigger.create({
-        trigger: stConfig.trigger,
-        start: 'top top',
-        end: `+=${CFG.surface.pinDuration()}`,
-        pin: true, anticipatePin: 1,
-      });
-    } else {
-      st = ScrollTrigger.create({
-        trigger: stConfig.trigger,
-        start:  'top top',
-        end:    `+=${CFG.surface.pinDuration()}`,
-        pin:    true,
-        scrub:  CFG.surface.scrub,
-        anticipatePin: 1,
-        onUpdate(self) {
-          const idx = clamp(
-            Math.round(self.progress * (CFG.surface.frameCount - 1)),
-            0, CFG.surface.frameCount - 1
-          );
-          if (idx !== curIdx) { curIdx = idx; scheduleRender(); }
-        },
-      });
-    }
+    // Pin only — scroll no longer controls frames
+    const st = ScrollTrigger.create({
+      trigger: stConfig.trigger,
+      start: 'top top',
+      end:   `+=${CFG.surface.pinDuration()}`,
+      pin:   true,
+      anticipatePin: 1,
+    });
 
     return {
       onResize() { resize(); render(); },
       destroy()  {
         if (rafId) cancelAnimationFrame(rafId);
-        if (st)    st.kill();
+        st.kill();
       },
     };
   }
@@ -733,66 +780,138 @@
 
   /* ─────────────────────────────────────────────────────────────
      initDiveTransition
-     Scroll-driven: atmosphere shifts, bubbles intensify, scene
-     settles into underwater blue as the viewer "descends".
+     Canvas particle burst simulating rapid underwater descent.
+     200 bubbles accelerate and elongate as scroll progress → 1.
+     Scroll speed contrast: surface scrub=2.2 (slow/dreamy) →
+     transition scrub=0.22 (instant/violent) → underwater scrub=1.6.
   ───────────────────────────────────────────────────────────── */
   function initDiveTransition(sectionEl) {
-    const mediaEl = document.getElementById('transition-media');
-    const farEl   = document.getElementById('transition-bubbles-far');
-    const midEl   = document.getElementById('transition-bubbles-mid');
-    const nearEl  = document.getElementById('transition-bubbles-near');
-    const mob     = isMobile();
-
-    const farLayer  = createBubbleLayer(farEl,  { count: mob ? 10:20, minSize:2,  maxSize:5,  minSpeed:9,  maxSpeed:16, wobble:false });
-    const midLayer  = createBubbleLayer(midEl,  { count: mob ?  8:15, minSize:4,  maxSize:11, minSpeed:5,  maxSpeed:10, wobble:true  });
-    const nearLayer = createBubbleLayer(nearEl, { count: mob ?  5:10, minSize:10, maxSize:22, minSpeed:3,  maxSpeed:7,  wobble:true  });
-
-    let st = null;
-
     if (REDUCED_MOTION) {
-      st = ScrollTrigger.create({
-        trigger: sectionEl,
-        start: 'top top',
+      const st = ScrollTrigger.create({
+        trigger: sectionEl, start: 'top top',
         end: `+=${CFG.transition.pinDuration()}`,
         pin: true, anticipatePin: 1,
       });
-    } else {
-      // Mid + near bubbles hidden at start; revealed mid-scroll
-      gsap.set([midEl, nearEl], { autoAlpha: 0 });
-
-      const tl = gsap.timeline({ paused: true });
-
-      // 0–20 %: atmosphere begins shifting
-      tl.to(sectionEl,  { backgroundColor: '#001422', duration: .2, ease: 'none' }, 0);
-
-      // 10–70 %: downward-motion cue on the background layer
-      tl.fromTo(mediaEl,
-        { y: 0,   scale: 1    },
-        { y: 95,  scale: 1.06, duration: .6, ease: 'power1.in' },
-        .1
-      );
-
-      // 20–62 %: bubble depth layers fade in
-      tl.to([midEl, nearEl], { autoAlpha: 1, duration: .42, ease: 'power1.in' }, .2);
-
-      // 65–100 %: settle into underwater calm
-      tl.to(sectionEl, { backgroundColor: '#000c1c', duration: .35, ease: 'power1.out' }, .65);
-
-      st = ScrollTrigger.create({
-        trigger: sectionEl,
-        start:   'top top',
-        end:     `+=${CFG.transition.pinDuration()}`,
-        pin:     true,
-        scrub:   CFG.transition.scrub,
-        anticipatePin: 1,
-        animation: tl,
-      });
+      return { destroy() { st.kill(); } };
     }
 
+    /* ── canvas setup ── */
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:8;pointer-events:none;';
+    sectionEl.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+
+    let W = 0, H = 0;
+    let progress = 0;
+    let rafId    = null;
+    let lastT    = 0;
+
+    /* ── particle pool ── */
+    const COUNT = isMobile() ? 120 : 210;
+    const pts   = [];
+
+    function spawnParticle() {
+      return {
+        x:      rand(0, W  || window.innerWidth),
+        y:      rand(-H * 0.2, H * 1.1  || window.innerHeight),
+        r:      rand(1.2, 13),
+        vy:     rand(2.5, 15),    // base upward speed
+        vx:     rand(-0.4, 0.4),  // horizontal drift
+        depth:  Math.random(),    // 0 = far/dim, 1 = near/bright
+        phase:  rand(0, Math.PI * 2),
+      };
+    }
+
+    function initParticles() {
+      pts.length = 0;
+      for (let i = 0; i < COUNT; i++) pts.push(spawnParticle());
+    }
+
+    function resize() {
+      canvas.width  = W = window.innerWidth;
+      canvas.height = H = window.innerHeight;
+      initParticles();
+    }
+    resize();
+
+    /* ── draw loop ── */
+    function draw(now) {
+      const dt      = Math.min((now - lastT) / 16.67, 3);
+      lastT         = now;
+
+      // Scroll-mapped speed: 1× at entry → 12× at full dive
+      const spd     = 1 + progress * 11;
+
+      // Trail alpha: less opaque = longer ghost trails (more frenetic)
+      const trailA  = 0.28 + (1 - progress) * 0.38;
+      ctx.fillStyle = `rgba(0,7,20,${trailA})`;
+      ctx.fillRect(0, 0, W, H);
+
+      for (const p of pts) {
+        // Move
+        p.y -= p.vy * spd * dt;
+        p.x += Math.sin(p.phase + now * 0.0008) * p.vx * spd * 0.5;
+        p.phase += 0.012;
+
+        // Wrap bottom→top
+        if (p.y < -p.r * 4) {
+          p.y = H + p.r * 2;
+          p.x = rand(0, W);
+        }
+
+        // Elongate bubble into speed-line as dive accelerates
+        const elongation  = 1 + spd * p.depth * 1.1;
+        const er          = p.r * (0.55 + p.depth * 0.45);
+        const alpha       = (0.12 + p.depth * 0.52) * (0.35 + progress * 0.65);
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+
+        // Bubble gradient
+        const g = ctx.createRadialGradient(-er * 0.28, -er * 0.28, 0, 0, 0, er);
+        g.addColorStop(0,   `rgba(225,242,255,${alpha})`);
+        g.addColorStop(0.45,`rgba(150,205,255,${alpha * 0.45})`);
+        g.addColorStop(1,   `rgba(80,155,220,${alpha * 0.08})`);
+
+        ctx.beginPath();
+        ctx.ellipse(0, 0, er, er * elongation, 0, 0, Math.PI * 2);
+        ctx.fillStyle   = g;
+        ctx.fill();
+        ctx.strokeStyle = `rgba(200,230,255,${alpha * 0.55})`;
+        ctx.lineWidth   = 0.5;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Radial vignette closes in as you dive deeper
+      const vig = ctx.createRadialGradient(W/2, H/2, H * 0.08, W/2, H/2, Math.max(W,H) * 0.76);
+      vig.addColorStop(0, 'transparent');
+      vig.addColorStop(1, `rgba(0,4,16,${0.15 + progress * 0.72})`);
+      ctx.fillStyle = vig;
+      ctx.fillRect(0, 0, W, H);
+
+      rafId = requestAnimationFrame(draw);
+    }
+
+    rafId = requestAnimationFrame(draw);
+
+    /* ── ScrollTrigger: very short pin + snappy scrub = fast zone ── */
+    const st = ScrollTrigger.create({
+      trigger: sectionEl,
+      start:   'top top',
+      end:     `+=${CFG.transition.pinDuration()}`,
+      pin:     true,
+      scrub:   CFG.transition.scrub,
+      anticipatePin: 1,
+      onUpdate(self) { progress = self.progress; },
+    });
+
     return {
-      destroy() {
-        farLayer.destroy(); midLayer.destroy(); nearLayer.destroy();
-        if (st) st.kill();
+      onResize() { resize(); },
+      destroy()  {
+        cancelAnimationFrame(rafId);
+        st.kill();
+        canvas.remove();
       },
     };
   }
@@ -931,9 +1050,20 @@
         y: -26, autoAlpha: 0,
         duration: 1.1, delay: .55, ease: 'power2.out',
       });
-      gsap.from('.overlay-content > *', {
-        y: 24, autoAlpha: 0,
-        duration: .9, delay: .75, stagger: .13, ease: 'power2.out',
+      gsap.from('.overlay-chapter', {
+        y: 12, autoAlpha: 0, duration: .8, delay: .7, ease: 'power2.out',
+      });
+      gsap.from('.heading-a', {
+        y: 18, autoAlpha: 0, duration: .9, delay: .86, ease: 'power2.out',
+      });
+      gsap.from('.heading-b', {
+        y: 30, autoAlpha: 0, duration: 1.1, delay: 1.0, ease: 'power3.out',
+      });
+      gsap.from('.overlay-body', {
+        y: 14, autoAlpha: 0, duration: .8, delay: 1.18, ease: 'power2.out',
+      });
+      gsap.from('.overlay-sep, .overlay-actions', {
+        y: 10, autoAlpha: 0, duration: .7, delay: 1.34, stagger: .1, ease: 'power2.out',
       });
     }
 
