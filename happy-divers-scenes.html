@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Happy Divers — Mediterranean diving expeditions and underwater adventures">
+  <title>Happy Divers — Into the Blue</title>
+  <style>
+    /* ── Reset ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: #000b1a; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: #000b1a;
+      color: #d4e8f7;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Site Header ─────────────────────────────────────── */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.5rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(0,8,22,.65) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .site-header > * { pointer-events: auto; }
+
+    .site-logo {
+      font-size: .9rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: #c2daf0;
+      font-weight: 400;
+    }
+
+    .site-nav { display: flex; gap: 2rem; }
+
+    .site-nav a {
+      color: rgba(194,218,240,.55);
+      text-decoration: none;
+      font-size: .7rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      transition: color .25s;
+    }
+    .site-nav a:hover, .site-nav a:focus { color: #c2daf0; outline: none; }
+
+    /* ── Scene ───────────────────────────────────────────── */
+    .scene {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Scene Media ─────────────────────────────────────── */
+    .scene-media {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    /* ── Scene Canvas ────────────────────────────────────── */
+    .scene-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* ── Surface: left-column gradient ──────────────────── */
+    .surface-gradient {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      background:
+        linear-gradient(to right,
+          rgba(0,8,22,.62) 0%,
+          rgba(0,8,22,.28) 38%,
+          transparent 60%),
+        linear-gradient(to bottom,
+          rgba(0,8,22,.38) 0%,
+          transparent 22%);
+    }
+
+    /* ── Scene Overlay (text) ────────────────────────────── */
+    .scene-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .scene-overlay--surface {
+      padding: 0 6vw;
+      padding-right: 52%;   /* keep right half open for divers */
+    }
+
+    .overlay-content { max-width: 480px; width: 100%; }
+
+    .overlay-eyebrow {
+      display: block;
+      font-size: .66rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: rgba(180,212,238,.5);
+      margin-bottom: 1.25rem;
+    }
+
+    .overlay-heading {
+      font-size: clamp(2.4rem, 5vw, 4.2rem);
+      line-height: 1.06;
+      font-weight: 400;
+      color: #c2daf0;
+      margin-bottom: 1.3rem;
+      text-shadow:
+        0 1px 4px rgba(0,0,0,.35),
+        0 4px 32px rgba(0,18,52,.6);
+    }
+
+    .overlay-body {
+      font-size: .95rem;
+      line-height: 1.72;
+      color: rgba(194,218,240,.65);
+      margin-bottom: 2.2rem;
+      max-width: 370px;
+      text-shadow: 0 1px 12px rgba(0,14,38,.55);
+    }
+
+    .overlay-actions { display: flex; gap: .85rem; flex-wrap: wrap; }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: .76em 1.8em;
+      font-size: .71rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      min-height: 44px;
+      transition: background .28s, border-color .28s, color .28s;
+      border: 1px solid transparent;
+    }
+
+    .btn--primary {
+      background: rgba(194,218,240,.11);
+      color: #c2daf0;
+      border-color: rgba(194,218,240,.32);
+      backdrop-filter: blur(6px);
+    }
+    .btn--primary:hover, .btn--primary:focus {
+      background: rgba(194,218,240,.2);
+      border-color: rgba(194,218,240,.58);
+      outline: none;
+    }
+
+    .btn--ghost {
+      background: transparent;
+      color: rgba(194,218,240,.48);
+      border-color: rgba(194,218,240,.16);
+    }
+    .btn--ghost:hover, .btn--ghost:focus {
+      color: #c2daf0;
+      border-color: rgba(194,218,240,.38);
+      outline: none;
+    }
+
+    /* ── Scroll indicator ────────────────────────────────── */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .55rem;
+      color: rgba(194,218,240,.38);
+      font-size: .58rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .scroll-indicator-line {
+      width: 1px;
+      height: 34px;
+      background: linear-gradient(to bottom, rgba(194,218,240,.55), transparent);
+      animation: scrollPulse 2.2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { transform: scaleY(.55); opacity: .28; }
+      50%       { transform: scaleY(1);  opacity: .85; }
+    }
+
+    /* ── Transition scene ────────────────────────────────── */
+    .scene-transition { background: #00172e; }
+
+    .transition-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(150deg, #002244 0%, #001428 55%, #000c1e 100%);
+    }
+
+    .transition-atmosphere {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: radial-gradient(
+        ellipse 80% 60% at 50% 40%,
+        rgba(0,65,135,.28) 0%,
+        transparent 70%
+      );
+      pointer-events: none;
+    }
+
+    /* ── Underwater scene ────────────────────────────────── */
+    .scene-underwater { background: #000a1a; }
+
+    /* REPLACE: loop video background slot */
+    /* REPLACE: section-2 frame sequence canvas slot  */
+    .underwater-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        radial-gradient(ellipse 100% 55% at 50% 0%,   rgba(0,58,125,.52) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 75% at 14% 68%,   rgba(0,33,88,.55)  0%, transparent 58%),
+        radial-gradient(ellipse 55% 75% at 86% 54%,   rgba(0,26,72,.45)  0%, transparent 58%),
+        radial-gradient(ellipse 80% 45% at 50% 100%,  rgba(0,9,26,.8)    0%, transparent 52%),
+        linear-gradient(to bottom, #002e5c 0%, #001630 36%, #000c20 70%, #00080f 100%);
+    }
+
+    /* REPLACE: light ray texture overlay slot */
+    .underwater-rays {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        -17deg,
+        transparent,
+        transparent 108px,
+        rgba(72,152,215,1) 108px,
+        rgba(72,152,215,1) 126px
+      );
+      opacity: .07;
+      animation: rayShimmer 10s ease-in-out infinite;
+    }
+
+    @keyframes rayShimmer {
+      0%, 100% { opacity: .05; transform: translateX(-4%) skewX(-1.5deg); }
+      50%       { opacity: .10; transform: translateX( 4%) skewX( 1.5deg); }
+    }
+
+    .underwater-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background: radial-gradient(
+        ellipse 88% 78% at 50% 50%,
+        transparent 18%,
+        rgba(0,5,16,.72) 100%
+      );
+    }
+
+    /* Bubble texture slot ↓ */
+    .underwater-haze {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0,18,52,.14) 40%,
+        rgba(0,10,30,.32) 100%
+      );
+    }
+
+    .underwater-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      padding: 0 7vw;
+    }
+
+    .underwater-text { max-width: 400px; }
+
+    .underwater-text .overlay-eyebrow  { color: rgba(70,150,215,.42); }
+    .underwater-text .overlay-heading  {
+      font-size: clamp(1.9rem, 3.4vw, 3.2rem);
+      color: rgba(172,210,242,.82);
+    }
+    .underwater-text .overlay-body { color: rgba(130,185,228,.52); }
+
+    /* ── Bubble layers ───────────────────────────────────── */
+    .scene-bubbles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .scene-bubbles--far  { z-index: 5; }
+    .scene-bubbles--mid  { z-index: 6; }
+    .scene-bubbles--near { z-index: 7; }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      will-change: transform;
+      background: radial-gradient(
+        circle at 32% 28%,
+        rgba(255,255,255,.58),
+        rgba(195,228,255,.06) 68%,
+        transparent 100%
+      );
+      border: 1px solid rgba(195,228,255,.1);
+    }
+
+    .scene-bubbles--far  .bubble { filter: blur(.8px); opacity: .18; }
+    .scene-bubbles--mid  .bubble { opacity: .30; }
+    .scene-bubbles--near .bubble { opacity: .48; }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    .site-footer {
+      padding: 5rem 2.5rem;
+      text-align: center;
+      color: rgba(194,218,240,.2);
+      font-size: .7rem;
+      letter-spacing: .12em;
+      background: #00070f;
+      border-top: 1px solid rgba(194,218,240,.04);
+    }
+
+    /* ── Responsive ──────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .scene-overlay--surface {
+        padding-right: 5vw;
+        padding-left: 5vw;
+        align-items: flex-end;
+        padding-bottom: 9vh;
+      }
+      .overlay-content  { max-width: 100%; }
+      .overlay-body     { max-width: 100%; }
+      .site-nav         { display: none; }
+      .btn--primary     { backdrop-filter: none; }
+    }
+
+    /* ── Reduced motion ──────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .scroll-indicator-line,
+      .underwater-rays { animation: none !important; }
+      .bubble          { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════ HEADER ═══════════════════ -->
+  <header class="site-header" role="banner">
+    <span class="site-logo">Happy Divers</span>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="#scene-underwater">Diving</a>
+      <a href="#expeditions">Expeditions</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- ═══════════════════ MAIN ═══════════════════════ -->
+  <main role="main">
+
+    <!-- ════════ SCENE 1 · SURFACE ════════ -->
+    <section
+      class="scene scene-surface"
+      id="scene-surface"
+      aria-label="Sea surface introduction"
+    >
+      <div class="scene-media">
+        <canvas
+          class="scene-canvas"
+          id="surface-canvas"
+          role="img"
+          aria-label="Cinematic sea-surface footage"
+        ></canvas>
+      </div>
+
+      <div class="surface-gradient" aria-hidden="true"></div>
+
+      <div class="scene-overlay scene-overlay--surface">
+        <div class="overlay-content">
+          <span class="overlay-eyebrow">Mediterranean Coast</span>
+          <h1 class="overlay-heading">Into&nbsp;the&nbsp;Blue</h1>
+          <p class="overlay-body">
+            Where the sea meets the sky, every breath becomes a preparation
+            for the world beneath. Join us on the dive of a lifetime.
+          </p>
+          <div class="overlay-actions">
+            <a href="#scene-underwater" class="btn btn--primary">Explore Expeditions</a>
+            <a href="#about"            class="btn btn--ghost">Our Story</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-indicator" aria-hidden="true">
+        <div class="scroll-indicator-line"></div>
+        <span>Scroll</span>
+      </div>
+    </section>
+
+    <!-- ════════ TRANSITION · DIVE RAMP ════════ -->
+    <section
+      class="scene scene-transition"
+      id="scene-transition"
+      aria-label="Diving below the surface"
+    >
+      <div class="scene-media" id="transition-media">
+        <div class="transition-bg"></div>
+        <div class="transition-atmosphere" aria-hidden="true"></div>
+      </div>
+
+      <div class="scene-bubbles scene-bubbles--far"  id="transition-bubbles-far"  aria-hidden="true"></div>
+      <div class="scene-bubbles scene-bubbles--mid"  id="transition-bubbles-mid"  aria-hidden="true"></div>
+      <div class="scene-bubbles scene-bubbles--near" id="transition-bubbles-near" aria-hidden="true"></div>
+    </section>
+
+    <!-- ════════ SCENE 2 · UNDERWATER ════════ -->
+    <section
+      class="scene scene-underwater"
+      id="scene-underwater"
+      aria-label="Underwater drift"
+    >
+      <div class="scene-media" id="underwater-media">
+        <!-- REPLACE: <video autoplay muted loop playsinline class="scene-canvas" id="underwater-video"> -->
+        <!-- REPLACE: <canvas class="scene-canvas" id="underwater-canvas"></canvas> (section-2 frames) -->
+        <div class="underwater-bg"      id="underwater-bg"></div>
+        <div class="underwater-rays"    aria-hidden="true"></div><!-- REPLACE: light ray texture -->
+        <div class="underwater-vignette" aria-hidden="true"></div>
+        <div class="underwater-haze"    aria-hidden="true"></div><!-- bubble texture slot -->
+      </div>
+
+      <div class="scene-bubbles scene-bubbles--far"  id="underwater-bubbles-far"  aria-hidden="true"></div>
+      <div class="scene-bubbles scene-bubbles--mid"  id="underwater-bubbles-mid"  aria-hidden="true"></div>
+      <div class="scene-bubbles scene-bubbles--near" id="underwater-bubbles-near" aria-hidden="true"></div>
+
+      <div class="underwater-overlay">
+        <div class="underwater-text">
+          <span class="overlay-eyebrow">5 Metres Below</span>
+          <h2 class="overlay-heading">A&nbsp;World of Silence</h2>
+          <p class="overlay-body">
+            Time moves differently down here. The light dances, the pressure
+            hums, and everything above slowly fades into memory.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="site-footer" role="contentinfo" id="contact">
+    <p>&copy; 2024 Happy Divers &nbsp;·&nbsp; Mediterranean Diving Expeditions</p>
+  </footer>
+
+  <!-- ═══════════════════ GSAP ════════════════════ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+  'use strict';
+
+  /* ─────────────────────────────────────────────────────────────
+     CONFIG
+  ───────────────────────────────────────────────────────────── */
+  const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = () => window.innerWidth < 768;
+
+  const CFG = {
+    surface: {
+      frameCount:   192,
+      framePath:    (n) => `assets/frames/section-1/frame_${String(n).padStart(4,'0')}.png`,
+      pinDuration:  () => isMobile() ? 1800 : 3200,
+      scrub:        1.5,
+      priorityLoad: 14,   // frames loaded before the rest
+    },
+    transition: {
+      pinDuration: () => isMobile() ? 700 : 1200,
+      scrub: 1,
+    },
+    underwater: {
+      pinDuration: () => isMobile() ? 1500 : 2600,
+      scrub: 1,
+    },
+  };
+
+  /* ─────────────────────────────────────────────────────────────
+     UTILITIES
+  ───────────────────────────────────────────────────────────── */
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+  const rand  = (lo, hi) => lo + Math.random() * (hi - lo);
+
+  function debounce(fn, ms) {
+    let t;
+    return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     drawSequenceFrame  —  CSS "cover" behaviour on canvas
+  ───────────────────────────────────────────────────────────── */
+  function drawSequenceFrame(ctx, img, cw, ch) {
+    if (!img || !img.complete || !img.naturalWidth) return;
+
+    const iw = img.naturalWidth,  ih = img.naturalHeight;
+    const cr = cw / ch,           ir = iw / ih;
+    let sx, sy, sw, sh;
+
+    if (cr > ir) {
+      sw = iw;            sh = iw / cr;
+      sx = 0;             sy = (ih - sh) * .5;
+    } else {
+      sh = ih;            sw = ih * cr;
+      sy = 0;             sx = (iw - sw) * .5;
+    }
+
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     preloadSequenceFrames
+     Returns the mutable frames[] array (slots fill asynchronously).
+     Priority frames load first; the rest are staggered to avoid
+     saturating the network at startup.
+  ───────────────────────────────────────────────────────────── */
+  function preloadSequenceFrames(count, pathFn, priority, { onFirstFrame, onComplete } = {}) {
+    const frames = new Array(count).fill(null);
+    let loaded = 0;
+
+    function loadOne(i) {
+      const img = new Image();
+      img.onload = () => {
+        frames[i] = img;
+        loaded++;
+        if (i === 0 && onFirstFrame) onFirstFrame(img);
+        if (loaded === count && onComplete) onComplete(frames);
+      };
+      img.onerror = () => {
+        loaded++;
+        if (loaded === count && onComplete) onComplete(frames);
+      };
+      img.src = pathFn(i + 1);   // filenames are 1-indexed
+    }
+
+    const pri = Math.min(priority, count);
+    for (let i = 0; i < pri; i++) loadOne(i);
+
+    // Stagger remaining frames so the browser doesn't queue 180 requests at once
+    for (let i = pri; i < count; i++) {
+      setTimeout(() => loadOne(i), 80 + (i - pri) * 6);
+    }
+
+    return frames;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     initSequenceScene
+     Wires a canvas element to a scroll-scrubbed image sequence.
+  ───────────────────────────────────────────────────────────── */
+  function initSequenceScene(canvasEl, stConfig) {
+    const ctx   = canvasEl.getContext('2d');
+    let curIdx  = 0;
+    let pending = false;
+    let rafId   = null;
+
+    function resize() {
+      canvasEl.width  = window.innerWidth;
+      canvasEl.height = window.innerHeight;
+    }
+    resize();
+
+    function render() {
+      drawSequenceFrame(ctx, frames[curIdx], canvasEl.width, canvasEl.height);
+      pending = false;
+    }
+
+    function scheduleRender() {
+      if (!pending) {
+        pending = true;
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(render);
+      }
+    }
+
+    const frames = preloadSequenceFrames(
+      CFG.surface.frameCount,
+      CFG.surface.framePath,
+      CFG.surface.priorityLoad,
+      {
+        onFirstFrame(img) {
+          drawSequenceFrame(ctx, img, canvasEl.width, canvasEl.height);
+        },
+      }
+    );
+
+    let st = null;
+
+    if (REDUCED_MOTION) {
+      st = ScrollTrigger.create({
+        trigger: stConfig.trigger,
+        start: 'top top',
+        end: `+=${CFG.surface.pinDuration()}`,
+        pin: true, anticipatePin: 1,
+      });
+    } else {
+      st = ScrollTrigger.create({
+        trigger: stConfig.trigger,
+        start:  'top top',
+        end:    `+=${CFG.surface.pinDuration()}`,
+        pin:    true,
+        scrub:  CFG.surface.scrub,
+        anticipatePin: 1,
+        onUpdate(self) {
+          const idx = clamp(
+            Math.round(self.progress * (CFG.surface.frameCount - 1)),
+            0, CFG.surface.frameCount - 1
+          );
+          if (idx !== curIdx) { curIdx = idx; scheduleRender(); }
+        },
+      });
+    }
+
+    return {
+      onResize() { resize(); render(); },
+      destroy()  {
+        if (rafId) cancelAnimationFrame(rafId);
+        if (st)    st.kill();
+      },
+    };
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     createBubbleLayer
+     Populates a container with animated bubble elements.
+     y (rise) and x (wobble) are separate tweens — no conflicts.
+  ───────────────────────────────────────────────────────────── */
+  function createBubbleLayer(container, {
+    count    = 18,
+    minSize  = 3,   maxSize  = 14,
+    minSpeed = 5,   maxSpeed = 14,   // seconds to traverse viewport
+    wobble   = true,
+  } = {}) {
+    const vh     = window.innerHeight;
+    const anims  = [];
+    const elems  = [];
+
+    for (let i = 0; i < count; i++) {
+      const el   = document.createElement('div');
+      el.className = 'bubble';
+
+      const size = rand(minSize, maxSize);
+      const x    = rand(2, 98);
+      const dur  = rand(minSpeed, maxSpeed);
+      const startOffset = rand(0, dur);
+      const travelPx   = vh + size * 6;
+
+      el.style.cssText = [
+        `width:${size}px`,
+        `height:${size}px`,
+        `left:${x}%`,
+        `bottom:${-size * 3}px`,
+      ].join(';');
+
+      container.appendChild(el);
+      elems.push(el);
+
+      if (!REDUCED_MOTION) {
+        // Rise: y only
+        const a = gsap.to(el, {
+          y: -travelPx,
+          duration: dur,
+          delay: -startOffset,
+          ease: 'none',
+          repeat: -1,
+        });
+
+        // Drift: x only (independent property, no conflict with y tween)
+        if (wobble) {
+          const drift = rand(10, 42) * (Math.random() < .5 ? 1 : -1);
+          gsap.to(el, {
+            x: drift,
+            duration: rand(1.8, 3.8),
+            ease: 'sine.inOut',
+            yoyo: true,
+            repeat: -1,
+            delay: rand(0, 2),
+          });
+        }
+
+        anims.push(a);
+      }
+    }
+
+    return {
+      destroy() {
+        anims.forEach(a => a.kill());
+        elems.forEach(e => e.remove());
+      },
+    };
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     initDiveTransition
+     Scroll-driven: atmosphere shifts, bubbles intensify, scene
+     settles into underwater blue as the viewer "descends".
+  ───────────────────────────────────────────────────────────── */
+  function initDiveTransition(sectionEl) {
+    const mediaEl = document.getElementById('transition-media');
+    const farEl   = document.getElementById('transition-bubbles-far');
+    const midEl   = document.getElementById('transition-bubbles-mid');
+    const nearEl  = document.getElementById('transition-bubbles-near');
+    const mob     = isMobile();
+
+    const farLayer  = createBubbleLayer(farEl,  { count: mob ? 10:20, minSize:2,  maxSize:5,  minSpeed:9,  maxSpeed:16, wobble:false });
+    const midLayer  = createBubbleLayer(midEl,  { count: mob ?  8:15, minSize:4,  maxSize:11, minSpeed:5,  maxSpeed:10, wobble:true  });
+    const nearLayer = createBubbleLayer(nearEl, { count: mob ?  5:10, minSize:10, maxSize:22, minSpeed:3,  maxSpeed:7,  wobble:true  });
+
+    let st = null;
+
+    if (REDUCED_MOTION) {
+      st = ScrollTrigger.create({
+        trigger: sectionEl,
+        start: 'top top',
+        end: `+=${CFG.transition.pinDuration()}`,
+        pin: true, anticipatePin: 1,
+      });
+    } else {
+      // Mid + near bubbles hidden at start; revealed mid-scroll
+      gsap.set([midEl, nearEl], { autoAlpha: 0 });
+
+      const tl = gsap.timeline({ paused: true });
+
+      // 0–20 %: atmosphere begins shifting
+      tl.to(sectionEl,  { backgroundColor: '#001422', duration: .2, ease: 'none' }, 0);
+
+      // 10–70 %: downward-motion cue on the background layer
+      tl.fromTo(mediaEl,
+        { y: 0,   scale: 1    },
+        { y: 95,  scale: 1.06, duration: .6, ease: 'power1.in' },
+        .1
+      );
+
+      // 20–62 %: bubble depth layers fade in
+      tl.to([midEl, nearEl], { autoAlpha: 1, duration: .42, ease: 'power1.in' }, .2);
+
+      // 65–100 %: settle into underwater calm
+      tl.to(sectionEl, { backgroundColor: '#000c1c', duration: .35, ease: 'power1.out' }, .65);
+
+      st = ScrollTrigger.create({
+        trigger: sectionEl,
+        start:   'top top',
+        end:     `+=${CFG.transition.pinDuration()}`,
+        pin:     true,
+        scrub:   CFG.transition.scrub,
+        anticipatePin: 1,
+        animation: tl,
+      });
+    }
+
+    return {
+      destroy() {
+        farLayer.destroy(); midLayer.destroy(); nearLayer.destroy();
+        if (st) st.kill();
+      },
+    };
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     initUnderwaterScene
+     Placeholder atmosphere + rising bubbles + gentle camera drift.
+     Architecture prepared for video or frame-sequence replacement.
+  ───────────────────────────────────────────────────────────── */
+  function initUnderwaterScene(sectionEl) {
+    // REPLACE: init loop video ──────────────────────────────
+    //   const vid = document.getElementById('underwater-video');
+    //   vid.play();
+    // ───────────────────────────────────────────────────────
+    // REPLACE: init section-2 frame sequence ────────────────
+    //   return initSequenceScene(
+    //     document.getElementById('underwater-canvas'),
+    //     { trigger: '#scene-underwater' }
+    //   );
+    // ───────────────────────────────────────────────────────
+
+    const mediaEl = document.getElementById('underwater-media');
+    const bgEl    = document.getElementById('underwater-bg');
+    const farEl   = document.getElementById('underwater-bubbles-far');
+    const midEl   = document.getElementById('underwater-bubbles-mid');
+    const nearEl  = document.getElementById('underwater-bubbles-near');
+    const mob     = isMobile();
+
+    const farLayer  = createBubbleLayer(farEl,  { count: mob ? 14:26, minSize:2,  maxSize:4,  minSpeed:11, maxSpeed:20, wobble:false });
+    const midLayer  = createBubbleLayer(midEl,  { count: mob ?  8:16, minSize:3,  maxSize:9,  minSpeed:6,  maxSpeed:13, wobble:true  });
+    const nearLayer = createBubbleLayer(nearEl, { count: mob ?  5: 9, minSize:7,  maxSize:18, minSpeed:4,  maxSpeed:8,  wobble:true  });
+
+    let driftY = null, driftX = null, st = null;
+
+    if (!REDUCED_MOTION) {
+      // Continuous gentle bob (not scroll-driven)
+      driftY = gsap.to(mediaEl, {
+        y: -22, duration: 7,
+        ease: 'sine.inOut', yoyo: true, repeat: -1,
+      });
+      driftX = gsap.to(mediaEl, {
+        x: 12, duration: 11,
+        ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 3,
+      });
+
+      // Scroll-driven depth colour shift
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo(bgEl,
+        { filter: 'brightness(1)' },
+        { filter: 'brightness(.82)', duration: 1, ease: 'none' }
+      );
+
+      st = ScrollTrigger.create({
+        trigger: sectionEl,
+        start:   'top top',
+        end:     `+=${CFG.underwater.pinDuration()}`,
+        pin:     true,
+        scrub:   CFG.underwater.scrub,
+        anticipatePin: 1,
+        animation: tl,
+      });
+    } else {
+      st = ScrollTrigger.create({
+        trigger: sectionEl,
+        start: 'top top',
+        end: `+=${CFG.underwater.pinDuration()}`,
+        pin: true, anticipatePin: 1,
+      });
+    }
+
+    return {
+      destroy() {
+        farLayer.destroy(); midLayer.destroy(); nearLayer.destroy();
+        if (driftY) driftY.kill();
+        if (driftX) driftX.kill();
+        if (st)     st.kill();
+      },
+    };
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     handleResize  —  refreshes ScrollTrigger and redraws canvas
+  ───────────────────────────────────────────────────────────── */
+  function handleResize(scenes) {
+    ScrollTrigger.refresh();
+    scenes.forEach(s => s.onResize && s.onResize());
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     init
+  ───────────────────────────────────────────────────────────── */
+  function init() {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Prevent flash of unstyled canvas on slow connections
+    gsap.set('body', { autoAlpha: 0 });
+    gsap.to('body', { autoAlpha: 1, duration: .5, delay: .08 });
+
+    const scenes = [];
+
+    // ── Scene 1: Surface ──────────────────────────────────
+    scenes.push(
+      initSequenceScene(
+        document.getElementById('surface-canvas'),
+        { trigger: '#scene-surface' }
+      )
+    );
+
+    // ── Transition ────────────────────────────────────────
+    scenes.push(
+      initDiveTransition(document.getElementById('scene-transition'))
+    );
+
+    // ── Scene 2: Underwater ───────────────────────────────
+    scenes.push(
+      initUnderwaterScene(document.getElementById('scene-underwater'))
+    );
+
+    // ── Scroll indicator fades on first scroll ────────────
+    const scrollInd = document.querySelector('.scroll-indicator');
+    if (scrollInd && !REDUCED_MOTION) {
+      ScrollTrigger.create({
+        trigger: '#scene-surface',
+        start: 'top top',
+        end: '+=320',
+        scrub: true,
+        onUpdate(self) {
+          gsap.set(scrollInd, { opacity: Math.max(0, 1 - self.progress * 4) });
+        },
+      });
+    }
+
+    // ── Header + overlay entrance ─────────────────────────
+    if (!REDUCED_MOTION) {
+      gsap.from('.site-header', {
+        y: -26, autoAlpha: 0,
+        duration: 1.1, delay: .55, ease: 'power2.out',
+      });
+      gsap.from('.overlay-content > *', {
+        y: 24, autoAlpha: 0,
+        duration: .9, delay: .75, stagger: .13, ease: 'power2.out',
+      });
+    }
+
+    // ── Resize ────────────────────────────────────────────
+    const onResize = debounce(() => handleResize(scenes), 200);
+    window.addEventListener('resize', onResize);
+
+    // ── Cleanup ───────────────────────────────────────────
+    window.addEventListener('beforeunload', () => {
+      scenes.forEach(s => s.destroy());
+      window.removeEventListener('resize', onResize);
+      ScrollTrigger.killAll();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  </script>
+</body>
+</html>
