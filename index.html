@@ -78,15 +78,14 @@
       display: block;
     }
 
-    /* Scene 1: reduce saturation to tone down the marine blue,
-       scale(1.03) hides blur fringe at edges */
+    /* Scene 1: scale(1.03) hides blur fringe at edges */
     .scene-surface .scene-canvas {
-      filter: blur(2.8px) brightness(0.74) saturate(0.82);
+      filter: blur(2.5px) brightness(0.92) saturate(1.05);
       transform: scale(1.03);
       transform-origin: center center;
     }
 
-    /* ── Surface gradient — neutral dark, not navy ───────── */
+    /* ── Surface gradient ────────────────────────────────── */
     .surface-gradient {
       position: absolute;
       inset: 0;
@@ -94,12 +93,12 @@
       pointer-events: none;
       background:
         linear-gradient(to right,
-          rgba(6,6,10,.74) 0%,
-          rgba(6,6,10,.34) 40%,
-          transparent 62%),
+          rgba(6,6,10,.62) 0%,
+          rgba(6,6,10,.22) 42%,
+          transparent 64%),
         linear-gradient(to bottom,
-          rgba(6,6,10,.45) 0%,
-          transparent 26%);
+          rgba(6,6,10,.32) 0%,
+          transparent 28%);
     }
 
     /* ── Scene Overlay (text) ────────────────────────────── */
@@ -119,7 +118,7 @@
     /* ── Overlay content ─────────────────────────────────── */
     .overlay-content { max-width: 520px; width: 100%; }
 
-    /* Chapter marker — editorial, not nautical */
+    /* Chapter marker */
     .overlay-chapter {
       display: flex;
       align-items: center;
@@ -127,38 +126,37 @@
       margin-bottom: 3.2rem;
     }
     .overlay-chapter-num {
-      font-size: .5rem;
-      letter-spacing: .4em;
-      color: rgba(185,182,174,.2);
+      font-size: .52rem;
+      letter-spacing: .36em;
+      color: rgba(200,197,188,.5);
       font-style: italic;
     }
     .overlay-chapter-dash {
       width: 26px;
       height: 1px;
-      background: rgba(185,182,174,.16);
+      background: rgba(200,197,188,.3);
       flex-shrink: 0;
     }
     .overlay-chapter-label {
-      font-size: .5rem;
-      letter-spacing: .28em;
+      font-size: .52rem;
+      letter-spacing: .26em;
       text-transform: uppercase;
-      color: rgba(185,182,174,.2);
+      color: rgba(200,197,188,.48);
     }
 
-    /* Heading: spaced caps + massive bold — weight contrast */
+    /* Heading */
     .overlay-heading {
       display: block;
-      margin-bottom: 2.2rem;
+      margin-bottom: 2rem;
     }
     .heading-a {
       display: block;
-      font-size: clamp(1rem, 2vw, 1.7rem);
+      font-size: clamp(1rem, 2vw, 1.75rem);
       font-weight: 400;
-      font-style: normal;
       text-transform: uppercase;
       letter-spacing: .55em;
       line-height: 1.6;
-      color: rgba(196,193,185,.28);
+      color: rgba(220,217,208,.5);
     }
     .heading-b {
       display: block;
@@ -166,36 +164,38 @@
       font-weight: 700;
       line-height: .86;
       letter-spacing: -.03em;
-      color: #dddad3;
-      text-shadow: 0 2px 48px rgba(0,0,0,.55);
+      color: #f0ede6;
+      text-shadow:
+        0 2px 32px rgba(0,0,0,.5),
+        0 0 80px rgba(80,160,140,.18);
     }
 
     .overlay-body {
-      font-size: .85rem;
-      line-height: 1.9;
-      color: rgba(185,182,174,.4);
+      font-size: .88rem;
+      line-height: 1.88;
+      color: rgba(205,202,193,.65);
       margin-bottom: 0;
-      max-width: 290px;
+      max-width: 300px;
     }
 
     /* Separator */
     .overlay-sep {
       width: 26px;
       height: 1px;
-      background: rgba(185,182,174,.13);
+      background: rgba(200,197,188,.22);
       margin: 2.4rem 0;
     }
 
     .overlay-actions { display: flex; align-items: center; }
 
-    /* Minimal line-prefix button — the line extends on hover */
+    /* Minimal line-prefix button */
     .btn--discover {
       display: inline-flex;
       align-items: center;
       gap: .95rem;
       text-decoration: none;
-      color: rgba(196,193,185,.44);
-      font-size: .6rem;
+      color: rgba(215,212,203,.62);
+      font-size: .62rem;
       letter-spacing: .28em;
       text-transform: uppercase;
       border: none;
@@ -217,11 +217,11 @@
     }
     .btn--discover:hover,
     .btn--discover:focus {
-      color: rgba(210,207,200,.78);
+      color: rgba(240,237,230,.9);
       outline: none;
     }
     .btn--discover:hover::before,
-    .btn--discover:focus::before { width: 36px; }
+    .btn--discover:focus::before { width: 38px; }
 
     /* ── Scroll indicator ────────────────────────────────── */
     .scroll-indicator {
@@ -398,6 +398,53 @@
       border-top: 1px solid rgba(185,182,174,.04);
     }
 
+    /* ── Services strip ─────────────────────────────────── */
+    .overlay-services {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .overlay-services-item {
+      font-size: .5rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(185,182,174,.26);
+    }
+    .overlay-services-dot {
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: rgba(185,182,174,.18);
+      flex-shrink: 0;
+    }
+
+    /* ── Stats row ───────────────────────────────────────── */
+    .overlay-stats {
+      display: flex;
+      gap: 2.2rem;
+      margin-top: 2.8rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(185,182,174,.1);
+    }
+    .stat-num {
+      display: block;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: rgba(210,207,200,.55);
+      letter-spacing: -.02em;
+      line-height: 1;
+    }
+    .stat-label {
+      display: block;
+      font-size: .45rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(175,172,165,.22);
+      margin-top: .45rem;
+    }
+
     /* ── Responsive ──────────────────────────────────────── */
     @media (max-width: 768px) {
       .scene-overlay--surface {
@@ -423,11 +470,11 @@
 
   <!-- ═══════════════════ HEADER ═══════════════════ -->
   <header class="site-header" role="banner">
-    <span class="site-logo">Happy Divers</span>
+    <span class="site-logo">Dive Central</span>
     <nav class="site-nav" aria-label="Primary navigation">
-      <a href="#scene-underwater">Diving</a>
-      <a href="#expeditions">Expeditions</a>
-      <a href="#about">About</a>
+      <a href="#courses">Courses</a>
+      <a href="#scene-underwater">Guided Dives</a>
+      <a href="#about">About Us</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
@@ -456,26 +503,50 @@
         <div class="overlay-content">
 
           <div class="overlay-chapter">
-            <span class="overlay-chapter-num">I</span>
+            <span class="overlay-chapter-num">Est. 2004</span>
             <span class="overlay-chapter-dash"></span>
-            <span class="overlay-chapter-label">Prologue</span>
+            <span class="overlay-chapter-label">PADI &amp; SSI Certified</span>
           </div>
 
           <h1 class="overlay-heading">
-            <span class="heading-a">Into</span>
-            <span class="heading-b">the Blue</span>
+            <span class="heading-a">Dive</span>
+            <span class="heading-b">With Us</span>
           </h1>
 
           <p class="overlay-body">
-            A different kind of stillness.<br>
-            Mediterranean expeditions<br>
-            for those drawn to depth.
+            We are a family-run SCUBA centre with
+            over 20&nbsp;years of experience on the
+            Mediterranean. Professional, personal,
+            and built on a passion for the sea.
           </p>
+
+          <div class="overlay-services" aria-label="Services">
+            <span class="overlay-services-item">SCUBA Courses</span>
+            <span class="overlay-services-dot" aria-hidden="true"></span>
+            <span class="overlay-services-item">Guided Dives</span>
+            <span class="overlay-services-dot" aria-hidden="true"></span>
+            <span class="overlay-services-item">Equipment</span>
+          </div>
 
           <div class="overlay-sep"></div>
 
           <div class="overlay-actions">
-            <a href="#scene-underwater" class="btn--discover">Discover</a>
+            <a href="#contact" class="btn--discover">Book a Dive</a>
+          </div>
+
+          <div class="overlay-stats" aria-label="Key facts">
+            <div>
+              <span class="stat-num">20+</span>
+              <span class="stat-label">Years Active</span>
+            </div>
+            <div>
+              <span class="stat-num">PADI</span>
+              <span class="stat-label">Certified</span>
+            </div>
+            <div>
+              <span class="stat-num">Family</span>
+              <span class="stat-label">Run Business</span>
+            </div>
           </div>
 
         </div>
@@ -543,7 +614,7 @@
 
   <!-- ═══════════════════ FOOTER ═══════════════════ -->
   <footer class="site-footer" role="contentinfo" id="contact">
-    <p>&copy; 2024 Happy Divers &nbsp;·&nbsp; Mediterranean Diving Expeditions</p>
+    <p>&copy; 2024 Dive Central &nbsp;·&nbsp; Family-Run SCUBA Services Since 2004</p>
   </footer>
 
   <!-- ═══════════════════ GSAP ════════════════════ -->
@@ -1051,19 +1122,25 @@
         duration: 1.1, delay: .55, ease: 'power2.out',
       });
       gsap.from('.overlay-chapter', {
-        y: 12, autoAlpha: 0, duration: .8, delay: .7, ease: 'power2.out',
+        y: 12, autoAlpha: 0, duration: .8, delay: .65, ease: 'power2.out',
       });
       gsap.from('.heading-a', {
-        y: 18, autoAlpha: 0, duration: .9, delay: .86, ease: 'power2.out',
+        y: 18, autoAlpha: 0, duration: .9, delay: .82, ease: 'power2.out',
       });
       gsap.from('.heading-b', {
-        y: 30, autoAlpha: 0, duration: 1.1, delay: 1.0, ease: 'power3.out',
+        y: 32, autoAlpha: 0, duration: 1.1, delay: .96, ease: 'power3.out',
       });
       gsap.from('.overlay-body', {
-        y: 14, autoAlpha: 0, duration: .8, delay: 1.18, ease: 'power2.out',
+        y: 14, autoAlpha: 0, duration: .8, delay: 1.14, ease: 'power2.out',
+      });
+      gsap.from('.overlay-services', {
+        y: 8, autoAlpha: 0, duration: .7, delay: 1.28, ease: 'power2.out',
       });
       gsap.from('.overlay-sep, .overlay-actions', {
-        y: 10, autoAlpha: 0, duration: .7, delay: 1.34, stagger: .1, ease: 'power2.out',
+        y: 8, autoAlpha: 0, duration: .7, delay: 1.4, stagger: .1, ease: 'power2.out',
+      });
+      gsap.from('.overlay-stats > div', {
+        y: 10, autoAlpha: 0, duration: .65, delay: 1.56, stagger: .1, ease: 'power2.out',
       });
     }
 
