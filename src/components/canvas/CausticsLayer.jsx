@@ -9,31 +9,35 @@ export function CausticsLayer() {
   const meshRef = useRef();
   const { camera, size } = useThree();
 
-  const uniforms = useMemo(
-    () => ({
-      uTime:      { value: 0 },
-      uIntensity: { value: 0 },
-      uColor:     { value: new THREE.Color(0x2dd4bf) },
-    }),
-    [],
-  );
+  const uniforms = useMemo(() => ({
+    uTime:      { value: 0 },
+    uIntensity: { value: 0 },
+    uColor:     { value: new THREE.Color(0x00e5ff) },
+  }), []);
 
   useFrame(({ clock }) => {
-    uniforms.uTime.value      = clock.elapsedTime;
+    uniforms.uTime.value = clock.elapsedTime;
+
+    // Caustics: peak intensity in shallow/mid zone (p 0.2–0.6)
+    const p = sceneState.scrollProgress;
+    const target =
+      p < 0.18 ? 0 :
+      p < 0.35 ? (p - 0.18) / 0.17 :
+      p < 0.65 ? 1 :
+      p < 0.85 ? THREE.MathUtils.lerp(1, 0.25, (p - 0.65) / 0.20) :
+      0.25;
+
     uniforms.uIntensity.value = THREE.MathUtils.lerp(
-      uniforms.uIntensity.value,
-      sceneState.causticIntensity,
-      0.04,
+      uniforms.uIntensity.value, target, 0.04,
     );
 
     if (meshRef.current) {
       const dist = 4.5;
-      meshRef.current.position.y = camera.position.y;
-      meshRef.current.position.z = camera.position.z - dist;
+      meshRef.current.position.copy(camera.position);
+      meshRef.current.position.z -= dist;
       const fovRad = (camera.fov * Math.PI) / 180;
       const h = 2 * Math.tan(fovRad / 2) * dist * 1.04;
-      const w = h * (size.width / size.height);
-      meshRef.current.scale.set(w, h, 1);
+      meshRef.current.scale.set(h * (size.width / size.height), h, 1);
     }
   });
 

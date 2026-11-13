@@ -9,28 +9,32 @@ export function GodRaysLayer() {
   const meshRef = useRef();
   const { camera, size } = useThree();
 
-  const uniforms = useMemo(
-    () => ({
-      uTime:      { value: 0 },
-      uIntensity: { value: 0 },
-      uAspect:    { value: size.width / size.height },
-    }),
-    [],
-  );
+  const uniforms = useMemo(() => ({
+    uTime:      { value: 0 },
+    uIntensity: { value: 0 },
+    uAspect:    { value: size.width / size.height },
+  }), []);
 
   useFrame(({ clock }) => {
-    uniforms.uTime.value      = clock.elapsedTime;
-    uniforms.uAspect.value    = size.width / size.height;
+    uniforms.uTime.value   = clock.elapsedTime;
+    uniforms.uAspect.value = size.width / size.height;
+
+    // God rays: strongest just below surface, fade in deep water
+    const p = sceneState.scrollProgress;
+    const target =
+      p < 0.15 ? 0 :
+      p < 0.28 ? (p - 0.15) / 0.13 :
+      p < 0.50 ? THREE.MathUtils.lerp(1, 0.18, (p - 0.28) / 0.22) :
+      0.18;
+
     uniforms.uIntensity.value = THREE.MathUtils.lerp(
-      uniforms.uIntensity.value,
-      sceneState.godRayIntensity,
-      0.03,
+      uniforms.uIntensity.value, target, 0.03,
     );
 
     if (meshRef.current) {
       const dist = 4.3;
-      meshRef.current.position.y = camera.position.y;
-      meshRef.current.position.z = camera.position.z - dist;
+      meshRef.current.position.copy(camera.position);
+      meshRef.current.position.z -= dist;
       const fovRad = (camera.fov * Math.PI) / 180;
       const h = 2 * Math.tan(fovRad / 2) * dist * 1.04;
       meshRef.current.scale.set(h * (size.width / size.height), h, 1);

@@ -1,33 +1,14 @@
-// Central mutable data bus. ScrollTrigger writes here; useFrame() reads here.
-// Never use React state for these — they update every frame.
+// Central mutable data bus — written by the scroll rig, read by useFrame() and the HTML overlay.
+// Plain object on purpose: it changes every frame and must not trigger React renders.
 export const sceneState = {
-  // Master scroll
-  scrollProgress: 0,      // 0–1 across entire page
-
-  // Camera
-  cameraY: 2.0,           // world Y: positive = above surface, negative = depth
-  cameraX: 0,
-  targetCameraY: 2.0,
-
-  // Zone identifier
-  zone: 'surface',        // 'surface' | 'transition' | 'underwater' | 'courses' | 'about' | 'contact'
-
-  // Shader uniforms (set by ScrollTrigger, read in useFrame)
-  causticIntensity: 0,    // 0–1
-  godRayIntensity: 0,     // 0–1
-  fogDensity: 0,          // 0–1
-  depthTint: 0,           // 0–1: 0=near surface teal, 1=deep abyss navy
-
-  // Surface frame sequence
-  surfaceOpacity: 1,      // 1 at surface, 0 below
-
-  // Transition particle burst
-  transitionProgress: 0,  // 0–1 during the dive ramp
-
-  // Underwater ambience
-  bubbleSpeed: 0.4,
-  fishActivity: 0.5,
-
-  // Audio zone (for Howler crossfades)
-  audioZone: 'surface',
+  scrollProgress: 0,   // smoothed page scroll, 0→1
+  targetProgress: 0,   // raw page scroll, 0→1
+  curveU:         0,   // position on the camera spline, 0→1 (arc length)
+  camY:           1.5, // camera height; sea level is 0
+  depth:          0,   // metres under water (0 above the surface)
+  uTime:          0,
+  pointer:        { x: 0, y: 0 },
+  audioEnabled:   false,
 };
+
+if (typeof window !== 'undefined') window.__dive = sceneState;
