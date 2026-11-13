@@ -4,7 +4,7 @@ import { WAYPOINTS } from './waypoints';
 // there is a "hold": a stretch of scroll during which the camera barely drifts, so the card
 // stays on screen long enough to read. (The gate that stops a flick from skipping a card
 // lives in useDiveScroll.js.)
-const TRAVEL_VH = 640;  // scroll length of the whole dive without holds
+const TRAVEL_VH = 920;  // scroll length of the whole dive without holds
 const HOLD_VH   = 45;   // extra scroll spent at each card
 const EPS       = 0.004; // dive progress covered during a hold (± around the card)
 

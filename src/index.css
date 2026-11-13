@@ -384,8 +384,8 @@ html.lenis, html.lenis body { height: auto; }
    plastic slate divers write on. One neutral ink ramp, one accent (dive-flag red),
    4px grid, Jost for text, mono for figures. */
 .zone-card {
-  --ink: #0e1c24; --ink-2: rgba(14,28,36,0.72); --ink-3: rgba(14,28,36,0.52);
-  --line: rgba(14,28,36,0.10); --slate: rgba(244,247,248,0.93); --flag: #c4302b;
+  --ink: #0e1c24; --ink-2: rgba(14,28,36,0.84); --ink-3: rgba(14,28,36,0.64);
+  --line: rgba(14,28,36,0.14); --slate: rgba(244,247,248,0.74); --flag: #c4302b;
   --shift: 0px;
   position: fixed; left: 50%; top: 50%; z-index: 6;
   width: min(34rem, calc(100vw - 2rem));
@@ -432,6 +432,7 @@ html.lenis, html.lenis body { height: auto; }
   text-wrap: balance;
 }
 .zone-body { margin-top: 12px; color: var(--ink-2); white-space: pre-line; }
+.zone-more { display: none; }
 
 .zone-rows, .zone-steps, .zone-checks, .zone-list, .zone-photos { list-style: none; }
 .zone-rows { margin-top: 16px; }
@@ -510,9 +511,19 @@ html.lenis, html.lenis body { height: auto; }
     top: auto; bottom: 88px; left: 12px; right: 12px; width: auto;
     transform: translateY(var(--shift));
     max-height: calc(100vh - 168px); max-height: calc(100dvh - 168px); overflow-y: auto;
-    padding: 20px 20px 24px; font-size: 15px;
+    padding: 16px 20px 20px; font-size: 15px;
   }
   .zone-photos { grid-template-columns: repeat(2, 1fr); }
+  /* folded by default: the sea is the point, the text is one tap away */
+  .zone-more {
+    display: inline-flex; align-items: center; height: 36px; margin-top: 12px; padding: 0 12px;
+    background: none; border: 1px solid var(--line); border-radius: 8px; cursor: pointer;
+    color: var(--ink); font-family: inherit; font-size: 14px; font-weight: 500;
+  }
+  .zone-card:not(.is-open) > :not(.zone-head):not(.zone-title):not(.zone-more):not(.zone-actions) { display: none; }
+  .zone-card:not(.is-open) .zone-title { margin-top: 12px; font-size: 20px; }
+  .zone-card--cta .zone-actions { margin-top: 16px; flex-wrap: wrap; gap: 12px 20px; }
+  .zone-card--cta .zone-more { margin-right: 100%; }
   .zone-list { column-gap: 16px; }
   .dive-btn { animation: none; }
   .depth-hud { left: 1.2rem; bottom: 1.4rem; flex-direction: row; gap: 1rem; align-items: flex-end; }

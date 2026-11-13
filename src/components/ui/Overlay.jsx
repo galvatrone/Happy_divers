@@ -14,6 +14,11 @@ export function Overlay() {
   const splashRef = useRef();
   const cardRefs  = useRef([]);
   const [photo, setPhoto] = useState(null); // [id, caption] shown full screen
+  // On a phone a card is a short strip (place, depth, title) so the sea stays in view;
+  // `open` is the index of the one the visitor has unfolded.
+  const [open, setOpen] = useState(null);
+  const openRef = useRef(null);
+  openRef.current = open;
 
   useEffect(() => {
     let raf;
@@ -44,6 +49,7 @@ export function Overlay() {
         el.style.visibility = o < 0.01 ? 'hidden' : 'visible';
         el.style.pointerEvents = o > 0.6 ? 'auto' : 'none';
         el.classList.toggle('is-in', o > 0.45); // starts the staggered reveal of the content
+        if (openRef.current === i && o < 0.3) setOpen(null); // swum past: fold it again
       });
 
       raf = requestAnimationFrame(tick);
@@ -80,7 +86,7 @@ export function Overlay() {
       {WAYPOINTS.map((wp, i) => (
         <section
           key={wp.label}
-          className={`zone-card${wp.cta ? ' zone-card--cta' : ''}${wp.wide ? ' zone-card--wide' : ''}`}
+          className={`zone-card${wp.cta ? ' zone-card--cta' : ''}${wp.wide ? ' zone-card--wide' : ''}${open === i ? ' is-open' : ''}`}
           ref={el => { cardRefs.current[i] = el; }}
         >
           {/* signature: the card's depth on a 0–40 m ruler, like a reading on a dive computer */}
@@ -90,6 +96,9 @@ export function Overlay() {
             <div className="zone-ruler" aria-hidden="true"><i style={{ left: `${(wp.m / 40) * 100}%` }} /></div>
           </header>
           <h2 className="zone-title">{wp.title}</h2>
+          <button className="zone-more" aria-expanded={open === i} onClick={() => setOpen(open === i ? null : i)}>
+            {open === i ? T.less : T.more}
+          </button>
           {wp.body && <p className="zone-body">{wp.body}</p>}
           {wp.steps && (
             <ol className="zone-steps">
