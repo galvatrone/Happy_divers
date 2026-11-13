@@ -2,6 +2,7 @@ import { useRef, useEffect } from 'react';
 import { curve, scrollToCurve } from '../../store/cameraCurve';
 import { WAYPOINTS } from '../../store/waypoints';
 import { sceneState } from '../../store/sceneState';
+import { T } from '../../store/i18n';
 
 const SVG_W   = 68;
 const SVG_H   = 340;
@@ -84,7 +85,7 @@ export function WaypointNav() {
   }
 
   return (
-    <nav className="wn" aria-label="Маршрут погружения">
+    <nav className="wn" aria-label={T.route}>
       <svg
         className="wn-svg"
         width={SVG_W}

@@ -49,6 +49,10 @@ export function Rig() {
     look.lerp(BEACH, 1 - THREE.MathUtils.smoothstep(s, 0.035, 0.11));
     look.x += sway.x; look.y += sway.y;
 
+    // a phone held upright sees a narrow slice: open the lens so the hut, pier and reef still fit
+    const fov = camera.aspect < 1 ? 62 + (1 - camera.aspect) * 34 : 62;
+    if (Math.abs(camera.fov - fov) > 0.01) { camera.fov = fov; camera.updateProjectionMatrix(); }
+
     camera.position.copy(pos);
     camera.lookAt(look);
     camera.rotation.z += Math.sin(t * 0.6) * 0.012 * above;

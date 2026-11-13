@@ -7,6 +7,7 @@ import { LoadingScreen } from './components/ui/LoadingScreen';
 import { WaypointNav }   from './components/ui/WaypointNav';
 import { useDiveScroll } from './hooks/useDiveScroll';
 import { DEBUG_P }       from './world/quality';
+import { T, OTHER_LANG, setLang } from './store/i18n';
 
 export default function App() {
   const [loaded, setLoaded] = useState(DEBUG_P !== null);
@@ -25,7 +26,7 @@ export default function App() {
       <a
         href="#"
         className="site-logo"
-        aria-label="Happy Divers — к поверхности"
+        aria-label={T.logoLabel}
         onClick={e => { e.preventDefault(); window.dispatchEvent(new CustomEvent('dive:goto', { detail: 0 })); }}
       >
         HAPPY DIVERS
@@ -34,6 +35,7 @@ export default function App() {
       <WaypointNav />
       <DepthHUD />
       <AudioToggle />
+      <button className="lang-toggle" onClick={() => setLang(OTHER_LANG)} aria-label={T.switchLabel}>{T.switchTo}</button>
 
       {!loaded && <LoadingScreen onComplete={() => setLoaded(true)} />}
     </>

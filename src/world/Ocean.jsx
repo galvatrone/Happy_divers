@@ -64,7 +64,7 @@ void main() {
   if (gl_FrontFacing) {
     // ── seen from the air ──
     vec3 V = normalize(cameraPosition - vW);
-    float fres = 0.02 + 0.98 * pow(1.0 - max(dot(N, V), 0.0), 5.0);
+    float fres = 0.02 + 0.98 * pow(clamp(1.0 - dot(N, V), 0.0, 1.0), 5.0);
     vec3 R = reflect(-V, N);
     R.y = abs(R.y);
     vec3 refl = skyColor(R);

@@ -3,6 +3,7 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { PerformanceMonitor } from '@react-three/drei';
 import { World } from './World';
 import { DPR } from './quality';
+import { T } from '../store/i18n';
 
 class SceneErrorBoundary extends Component {
   constructor(props) { super(props); this.state = { error: null }; }
@@ -10,7 +11,7 @@ class SceneErrorBoundary extends Component {
   componentDidCatch(error) { console.error('[DiveCanvas] crash:', error); }
   render() {
     if (!this.state.error) return this.props.children;
-    return <div className="scene-error">3D-сцена не запустилась: {String(this.state.error.message || this.state.error)}</div>;
+    return <div className="scene-error">{T.sceneError}: {String(this.state.error.message || this.state.error)}</div>;
   }
 }
 

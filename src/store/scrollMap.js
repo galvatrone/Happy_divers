@@ -2,9 +2,10 @@ import { WAYPOINTS } from './waypoints';
 
 // Page scroll → dive progress. Between cards the dive moves at a steady pace; at every card
 // there is a "hold": a stretch of scroll during which the camera barely drifts, so the card
-// stays on screen long enough to read and cannot be flicked past.
-const TRAVEL_VH = 950;  // scroll length of the whole dive without holds
-const HOLD_VH   = 60;   // extra scroll spent at each card
+// stays on screen long enough to read. (The gate that stops a flick from skipping a card
+// lives in useDiveScroll.js.)
+const TRAVEL_VH = 640;  // scroll length of the whole dive without holds
+const HOLD_VH   = 45;   // extra scroll spent at each card
 const EPS       = 0.004; // dive progress covered during a hold (± around the card)
 
 /** Dive positions (0…1) where the scroll stops: the hero and every card. */

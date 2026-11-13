@@ -1,12 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useProgress } from '@react-three/drei';
+import { T } from '../../store/i18n';
 
-const STATUS_LINES = [
-  'Проверяем снаряжение…',
-  'Забиваем баллоны…',
-  'Сверяем карту рифа…',
-  'Выходим в лагуну…',
-];
+const STATUS_LINES = T.loader;
 
 export function LoadingScreen({ onComplete }) {
   const { progress, active } = useProgress();
@@ -55,7 +51,7 @@ export function LoadingScreen({ onComplete }) {
     <div className="loading-screen" ref={overlayRef}>
       <div className="loading-inner">
         <span className="loading-brand">Happy Divers</span>
-        <span className="loading-tagline">Дайв-центр · Красное море</span>
+        <span className="loading-tagline">{T.loaderTag}</span>
 
         <div className="loading-progress-wrap">
           <div className="loading-bar">

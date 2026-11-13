@@ -26,13 +26,15 @@ varying vec2 vUv;
 varying vec3 vW;
 varying float vPhase;
 void main() {
-  float edge = pow(sin(vUv.x * 3.14159), 2.2);
+  // max(): pow() of a slightly negative number is NaN, and bloom smears one NaN pixel into black blocks
+  float edge = pow(max(sin(clamp(vUv.x, 0.0, 1.0) * 3.14159), 0.0), 2.2);
   float streak = 0.65 + 0.35 * sin(vUv.x * 22.0 + vPhase * 5.0 + uTime * 0.4);
-  float fall = pow(vUv.y, 1.25) * smoothstep(1.0, 0.93, vUv.y);
+  float fall = pow(clamp(vUv.y, 0.0, 1.0), 1.25) * smoothstep(1.0, 0.93, vUv.y);
   float flicker = 0.62 + 0.38 * sin(uTime * 0.8 + vPhase * 3.0) * sin(uTime * 0.37 + vPhase);
   float dist = length(cameraPosition - vW);
   float fade = smoothstep(1.0, 7.0, dist) * exp(-dist * 0.028);
   float a = edge * streak * fall * flicker * fade * uStrength * uOpacity;
+  a = clamp(a, 0.0, 1.0);
   gl_FragColor = vec4(vec3(0.72, 0.94, 1.0) * a, a);
 }`;
 

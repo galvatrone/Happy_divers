@@ -3,14 +3,15 @@ import Lenis from 'lenis';
 import { sceneState } from '../store/sceneState';
 import { STOPS, diveToPage, pageToDive } from '../store/scrollMap';
 
-const HOLD_MS = 750;  // how long the scroll is pinned after reaching a card
+const QUIET_MS = 140; // the gate at a card opens once the scroll gesture has been still this long
+const MIN_GATE_MS = 220;
 const REARM_PX = 60;  // a card pins again only after the scroll has left it by this much
 const easeInOut = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 /**
  * Smooth page scroll (Lenis). The page is one tall block; Rig.jsx reads how far it is scrolled.
- * Every card is a stop: the scroll is caught there and pinned for a moment, so one flick of the
- * wheel never skips a card.
+ * Between cards the scroll is entirely the visitor's. A card is a gate: the gesture that reaches
+ * it stops there (however hard the flick), and the next gesture carries on.
  * Events: `dive:goto` (detail = dive progress 0…1), `dive:plunge` (hero button → first card).
  */
 export function useDiveScroll(enabled) {
@@ -28,7 +29,7 @@ export function useDiveScroll(enabled) {
     if (!enabled) return undefined;
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const lenis = reduced ? null : new Lenis({ lerp: 0.09, wheelMultiplier: 0.9 });
+    const lenis = reduced ? null : new Lenis({ lerp: 0.12, wheelMultiplier: 1 });
 
     const maxScroll = () => document.documentElement.scrollHeight - window.innerHeight;
     const jump = top => {
@@ -38,7 +39,7 @@ export function useDiveScroll(enabled) {
 
     const armed = STOPS.map(() => false);
     let prev = window.scrollY;
-    let holdUntil = 0, holdTop = 0;
+    let gate = null;          // { top, since, lastPush } while the scroll is held at a card
     let auto = false, autoTimer = 0;
     let raf = 0;
 
@@ -48,15 +49,17 @@ export function useDiveScroll(enabled) {
       const now = performance.now();
       let cur = window.scrollY;
 
-      if (now < holdUntil) {
-        if (Math.abs(cur - holdTop) > 0.5) jump(holdTop);
-        cur = holdTop;
+      if (gate) {
+        // anything still pushing (wheel inertia, touch momentum) is put back and keeps the gate shut
+        if (Math.abs(cur - gate.top) > 0.5) { gate.lastPush = now; jump(gate.top); }
+        cur = gate.top;
+        if (now - gate.lastPush > QUIET_MS && now - gate.since > MIN_GATE_MS) gate = null;
       } else {
         for (let i = 1; i < STOPS.length; i++) {
           const c = diveToPage(STOPS[i]) * max;
           if (!auto && armed[i] && ((prev < c && cur >= c) || (prev > c && cur <= c))) {
             armed[i] = false;
-            holdTop = c; holdUntil = now + HOLD_MS;
+            gate = { top: c, since: now, lastPush: now };
             jump(c);
             cur = c;
             break;
@@ -72,7 +75,7 @@ export function useDiveScroll(enabled) {
 
     const travel = (s, duration, easing) => {
       const top = diveToPage(s) * maxScroll();
-      holdUntil = 0;
+      gate = null;
       if (!lenis) { window.scrollTo(0, top); return; }
       auto = true;
       clearTimeout(autoTimer);
