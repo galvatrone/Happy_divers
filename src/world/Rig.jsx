@@ -6,6 +6,7 @@ import { sceneState } from '../store/sceneState';
 import { uw } from './underwater';
 import { DEBUG_P } from './quality';
 import { cullables } from './instanced';
+import { pageToDive } from '../store/scrollMap';
 
 const BEACH = new THREE.Vector3(0, 3.5, -70);
 
@@ -26,7 +27,7 @@ export function Rig() {
     sceneState.uTime = t;
     uw.uTime.value = t;
 
-    sceneState.targetProgress = DEBUG_P ?? pageProgress();
+    sceneState.targetProgress = DEBUG_P ?? pageToDive(pageProgress());
     const k = DEBUG_P !== null ? 1 : 1 - Math.exp(-dt * 5);
     sceneState.scrollProgress += (sceneState.targetProgress - sceneState.scrollProgress) * k;
 
@@ -59,6 +60,13 @@ export function Rig() {
       const bs = m.boundingSphere || m.geometry.boundingSphere;
       const dist = bs.center.distanceTo(pos) - bs.radius;
       m.visible = under ? dist < 105 : (dist < 420 && bs.center.y + bs.radius > -9);
+    }
+
+    // going through the surface sets off the burst of bubbles (Particles.jsx)
+    if (pos.y > 0.3) sceneState.plungeArmed = true;
+    else if (pos.y < -0.15 && sceneState.plungeArmed) {
+      sceneState.plungeArmed = false;
+      sceneState.plungeAt = t;
     }
 
     sceneState.camY = pos.y;

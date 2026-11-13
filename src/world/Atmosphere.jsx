@@ -11,9 +11,9 @@ const STOPS = [
   { s: 0.24, fog: '#2aa3c8', density: 0.019, sun: 2.5, amb: 1.4,  caustic: 1.0, rays: 1.0, glow: 0.0, torch: 0 },
   { s: 0.42, fog: '#1784b8', density: 0.022, sun: 2.2, amb: 1.25, caustic: 0.9, rays: 0.8, glow: 0.0, torch: 0 },
   { s: 0.60, fog: '#0b4f86', density: 0.026, sun: 1.3, amb: 0.85, caustic: 0.5, rays: 0.45, glow: 0.1, torch: 0 },
-  { s: 0.72, fog: '#062c4c', density: 0.032, sun: 0.6, amb: 0.45, caustic: 0.2, rays: 0.15, glow: 0.3, torch: 0.3 },
-  { s: 0.79, fog: '#020b14', density: 0.046, sun: 0.0, amb: 0.10, caustic: 0.0, rays: 0.0, glow: 1.0, torch: 1 },
-  { s: 0.87, fog: '#031425', density: 0.040, sun: 0.05, amb: 0.16, caustic: 0.0, rays: 0.0, glow: 1.0, torch: 0.8 },
+  { s: 0.72, fog: '#07304f', density: 0.030, sun: 0.6, amb: 0.50, caustic: 0.2, rays: 0.15, glow: 0.3, torch: 0.3 },
+  { s: 0.79, fog: '#051a2b', density: 0.038, sun: 0.0, amb: 0.24, caustic: 0.0, rays: 0.0, glow: 1.0, torch: 1 },
+  { s: 0.87, fog: '#05192c', density: 0.036, sun: 0.05, amb: 0.26, caustic: 0.0, rays: 0.0, glow: 1.0, torch: 0.8 },
   { s: 1.00, fog: '#041a36', density: 0.030, sun: 0.18, amb: 0.34, caustic: 0.0, rays: 0.1, glow: 1.0, torch: 0.25 },
 ];
 const AIR = { fog: '#cfe9f5', density: 0.0022, sun: 3.1, amb: 1.5 };

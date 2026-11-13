@@ -1,5 +1,5 @@
-import { Component, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Component, useRef } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
 import { PerformanceMonitor } from '@react-three/drei';
 import { World } from './World';
 import { DPR } from './quality';
@@ -14,10 +14,27 @@ class SceneErrorBoundary extends Component {
   }
 }
 
-export function DiveCanvas() {
-  // Resolution follows the frame rate: weak GPUs drop to a softer image instead of stuttering.
-  const [dpr, setDpr] = useState(DPR);
+/**
+ * Resolution follows the frame rate: a weak GPU gets a softer image instead of stutter.
+ * The pixel ratio is changed from inside the frame loop and only ever goes down: resizing the
+ * canvas clears it, and doing that through React state (or back and forth) showed as black blinks.
+ */
+function AdaptiveResolution() {
+  const setDpr = useThree(state => state.setDpr);
+  const dpr = useRef(DPR);
+  return (
+    <PerformanceMonitor
+      bounds={() => [30, 60]}
+      onDecline={() => {
+        if (dpr.current <= 0.7) return;
+        dpr.current = Math.max(0.7, +(dpr.current - 0.25).toFixed(2));
+        setDpr(dpr.current);
+      }}
+    />
+  );
+}
 
+export function DiveCanvas() {
   return (
     <SceneErrorBoundary>
       <Canvas
@@ -25,14 +42,9 @@ export function DiveCanvas() {
         style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh' }}
         camera={{ position: [0, 1.5, 24], fov: 62, near: 0.1, far: 900 }}
         gl={{ antialias: false, alpha: false, stencil: false, powerPreference: 'high-performance' }}
-        dpr={dpr}
+        dpr={DPR}
       >
-        <PerformanceMonitor
-          bounds={() => [32, 55]}
-          flipflops={3}
-          onDecline={() => setDpr(d => Math.max(0.6, +(d - 0.2).toFixed(2)))}
-          onIncline={() => setDpr(d => Math.min(DPR, +(d + 0.1).toFixed(2)))}
-        />
+        <AdaptiveResolution />
         <World />
       </Canvas>
     </SceneErrorBoundary>

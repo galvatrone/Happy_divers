@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { fishGeometry } from './geo';
-import { makeRng } from './terrain';
+import { makeRng, terrainHeight } from './terrain';
 import { patchUnderwater } from './underwater';
 import { DENSITY } from './quality';
 import { fishTexture } from './textures';
@@ -19,7 +19,17 @@ const SCHOOLS = [
   { c: [  4, -20.0, 136], r: 10, n: 40, color: '#b9d6e8', size: 0.50, speed: 0.20, len: 1.9 },
   { c: [ 26, -31.0, 140], r: 6,  n: 30, color: '#8fb8ff', size: 0.22, speed: 0.42 },
   { c: [  8, -34.0, 212], r: 7,  n: 26, color: '#9fe8ff', size: 0.20, speed: 0.30 },
-];
+  // second wave — `fit` lifts the school clear of the seabed wherever it lands
+  { c: [ 14,  -3.0, -12], r: 4,  n: 34, color: '#7fe0d0', size: 0.13, speed: 0.70, fit: true },
+  { c: [ 28,  -6.0,  18], r: 5,  n: 40, color: '#ffe066', size: 0.15, speed: 0.58, fit: true },
+  { c: [ 10, -10.0,  64], r: 6,  n: 56, color: '#ff9a3d', size: 0.14, speed: 0.60, fit: true },
+  { c: [-14, -13.0,  86], r: 5,  n: 40, color: '#c084ff', size: 0.17, speed: 0.50, fit: true },
+  { c: [-20, -19.0, 122], r: 7,  n: 48, color: '#ffd23f', size: 0.19, speed: 0.44 },
+  { c: [ 10, -26.0, 129], r: 6,  n: 40, color: '#6fd3ff', size: 0.21, speed: 0.48 },
+  { c: [ -8, -33.0, 198], r: 5,  n: 28, color: '#baffea', size: 0.17, speed: 0.36 },
+].map(sc => (sc.fit
+  ? { ...sc, c: [sc.c[0], Math.min(-1.8, Math.max(sc.c[1], terrainHeight(sc.c[0], sc.c[2]) + 1 + sc.r * 0.3)), sc.c[2]] }
+  : sc));
 
 export function Fish() {
   const { mesh, fish } = useMemo(() => {

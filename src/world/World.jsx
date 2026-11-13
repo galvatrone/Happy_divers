@@ -10,6 +10,7 @@ import { Corals } from './Corals';
 import { Plants } from './Plants';
 import { Fish } from './Fish';
 import { Jellyfish } from './Jellyfish';
+import { Fauna } from './Fauna';
 import { Cave } from './Cave';
 import { GodRays } from './GodRays';
 import { Particles } from './Particles';
@@ -32,6 +33,7 @@ export function World() {
       <Plants />
       <Fish />
       <Jellyfish />
+      <Fauna />
       <Ocean />
       <GodRays />
       <Particles />

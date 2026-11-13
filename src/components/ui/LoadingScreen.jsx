@@ -1,15 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useProgress } from '@react-three/drei';
-import { Howler } from 'howler';
-import { sceneState } from '../../store/sceneState';
 
 const STATUS_LINES = [
-  'Initialising sonar…',
-  'Loading dive maps…',
-  'Calibrating depth sensors…',
-  'Pressurising systems…',
-  'Checking regulators…',
-  'Entering the blue…',
+  'Проверяем снаряжение…',
+  'Забиваем баллоны…',
+  'Сверяем карту рифа…',
+  'Выходим в лагуну…',
 ];
 
 export function LoadingScreen({ onComplete }) {
@@ -19,7 +15,6 @@ export function LoadingScreen({ onComplete }) {
   const statusRef     = useRef();
   const statusIdxRef  = useRef(0);
   const [ready, setReady]     = useState(false);
-  const [audioOn, setAudioOn] = useState(false);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -42,6 +37,13 @@ export function LoadingScreen({ onComplete }) {
     return () => clearTimeout(t);
   }, []);
 
+  // No button here any more: the Dive button lives on the hero, in front of the beach.
+  useEffect(() => {
+    if (!ready) return undefined;
+    const t = setTimeout(handleEnter, 500);
+    return () => clearTimeout(t);
+  }, [ready]);
+
   function handleEnter() {
     if (firedRef.current) return;
     firedRef.current = true;
@@ -49,18 +51,11 @@ export function LoadingScreen({ onComplete }) {
     setTimeout(() => onComplete?.(), 580);
   }
 
-  function toggleAudio() {
-    const next = !audioOn;
-    sceneState.audioEnabled = next;
-    Howler.mute(!next);
-    setAudioOn(next);
-  }
-
   return (
     <div className="loading-screen" ref={overlayRef}>
       <div className="loading-inner">
         <span className="loading-brand">Happy Divers</span>
-        <span className="loading-tagline">Into the Blue</span>
+        <span className="loading-tagline">Дайв-центр · Красное море</span>
 
         <div className="loading-progress-wrap">
           <div className="loading-bar">
@@ -71,22 +66,6 @@ export function LoadingScreen({ onComplete }) {
 
         <span className="loading-status" ref={statusRef}>{STATUS_LINES[0]}</span>
 
-        <button
-          className={`loading-enter-btn${ready ? ' visible' : ''}`}
-          onClick={handleEnter}
-          aria-label="Enter site"
-        >
-          Dive In
-        </button>
-
-        <button
-          className={`loading-audio-btn${audioOn ? ' on' : ''}`}
-          onClick={toggleAudio}
-          aria-label={audioOn ? 'Disable audio' : 'Enable ambient audio'}
-        >
-          <span className="loading-audio-dot" />
-          {audioOn ? 'Audio on' : 'Enable audio'}
-        </button>
       </div>
     </div>
   );

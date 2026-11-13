@@ -7,6 +7,8 @@ export const sceneState = {
   camY:           1.5, // camera height; sea level is 0
   depth:          0,   // metres under water (0 above the surface)
   uTime:          0,
+  plungeAt:       -100, // uTime of the last plunge through the surface
+  plungeArmed:    false,
   pointer:        { x: 0, y: 0 },
   audioEnabled:   false,
 };

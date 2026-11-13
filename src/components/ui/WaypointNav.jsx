@@ -61,7 +61,7 @@ export function WaypointNav() {
       }
 
       WAYPOINTS.forEach((wp, i) => {
-        const near = Math.abs(p - wp.t) < 0.06;
+        const near = Math.abs(p - wp.t) < 0.045;
         const dot  = dotRefs.current[i];
         const lbl  = labelRefs.current[i];
         if (dot) {
